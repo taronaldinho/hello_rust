@@ -20,31 +20,42 @@ fn rpn(exp: &str) -> f64 {
     // ミュータブルな変数 stack を空のスタックに束縛する
     let mut stack = Vec::new();
     
+    // exp の要素を半角スペースで分割し、それらに token を順に束縛する
     for token in exp.split_whitespace() {
-        // token が f64 にパースできるならばスタックに積む
+        // token が f64 型にパースできるならばスタックに push する
         if let Ok(num) = token.parse::<f64>() {            
             stack.push(num);
         } else {
+            // token が演算子なら apply2 関数で計算する
+            // |x, y| x + y はクロージャ (無名関数のようなもの)
             match token {
                 "+" => apply2(&mut stack, |x, y| x + y),
                 "-" => apply2(&mut stack, |x, y| x - y),
                 "*" => apply2(&mut stack, |x, y| x * y),
                 "/" => apply2(&mut stack, |x, y| x / y),
 
+                // token が演算子でないなら、エラー (panic!) を起こして終了
                 _ => panic!("Unknown operator: {}", token),
             }
         }
     }
+    // スタックから数値を 1 つ取り出す
+    // expect によって、エラーが発生した場合は指定した文字列を表示して終了する
     stack.pop().expect("Stack underflow")
 }
 
-
+// スタックから数値を 2 つ取り出し、F 型 のクロージャ fun で計算し、
+// 結果を stack に push する
 fn apply2<F>(stack: &mut Vec<f64>, fun: F)
+// F 型のトレイト境界
 where
     F: Fn(f64, f64) -> f64,
 {
+    // 変数 y と x を stack の最後の 2 要素に束縛する
     if let (Some(y), Some(x)) = (stack.pop(), stack.pop()) {
+        // クロージャ fun で計算し、その結果に変数 z を束縛する
         let z =fun(x, y);
+        // stack に z を push する
         stack.push(z);
     } else {
         panic!("Stack underflow");

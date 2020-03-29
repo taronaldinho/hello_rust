@@ -1,3 +1,4 @@
+// ← スラッシュ 2 つはコメント
 // 標準 (std) ライブラリから io ライブラリをインポート
 // Cargo.io からダウンロードした rand 
 use std::io;
@@ -6,32 +7,61 @@ use rand::Rng;
 
 fn main() {
     println!("Guess the number!");
-
+    // 1 から 101 未満 の範囲の整数からランダムに 1 つ抜き出す。
+    // この時点で型推論により Rust は secret_number を i32 型と推定する
+    // i32 は符号付きの 32 bit 整数である
     let secret_number = rand::thread_rng().gen_range(1, 101);
 
     println!("The secret number is: {}", secret_number);
 
-    println!("Please input your guess.");
+    // loop で繰り返し
+    loop {
 
-    // ミュータブルな guess という変数を作成し、
-    // String 型の関連関数 new() が返す新しい String インスタンスに束縛する
-    // (関連関数-associated function: Python などの Static Method のようなもの)
-    let mut guess = String::new();
+        println!("Please input your guess.");
 
-    // io ライブラリの関連関数 stdin() は標準入力へのハンドルを返す
-    // さらにハンドルに対して read_line() メソッドを呼んで文字列へのミュータブルな参照 (&mut) を渡す
-    // 同メソッドは io::Result という値 (Ok/Err) も返す
-    // expect() メソッドは呼び出された値が成功を表すものでなければ与えたメッセージとともに panic! する
-    io::stdin().read_line(&mut guess)
-        .expect("Failed to read line!");
+        // ミュータブルな guess という変数を作成し、
+        // String 型の関連関数 new() が返す新しい String インスタンスに束縛する
+        // (関連関数-associated function: Static Method のようなもの)
+        // この時点で型推論により Rust は guess を String 型と推定する
+        let mut guess = String::new();
 
-    let guess: u32 = guess.trim().parse()
-        .expect("Please type a number!");
+        // io ライブラリの関連関数 stdin() は標準入力へのハンドルを返す
+        // さらにハンドルに対して read_line() メソッドを呼んで文字列への
+        // ミュータブルな参照 (&mut) を渡す
+        // 同メソッドは io::Result という値 (Ok/Err) も返す
+        // expect() メソッドは呼び出された値が成功を表すものでなければ、
+        // 与えたメッセージとともに panic! する
+        io::stdin().read_line(&mut guess)
+            .expect("Failed to read line!");
 
-    println!("You guessed: {}", guess);
+        // String 型の guess から前後の余分なスペースや改行文字を除いて 
+        // 符号なし 32 bit 整数の u32 型にキャストする (シャドーイング)
+        // parse() は Result を返します。
+        // Ok(num) は Ok をアンラップして得られた値(整数値)を num という
+        // 名前に設定し、続く右側でその値をそのまま返している
+        let guess: u32 = match guess.trim().parse() {
+                    Ok(num) => num,
+                    Err(_) => continue,
+                };
 
-    match guess.cmp(&secret_number) {
-        Ordering::Less => println!("Too small!"),
-        Ordering::Greater => println!("Too big!"),
-        Ordering::Equal => println!("You win!"),
+        println!("You guessed: {}", guess);
+
+        // guess と secret_number (の参照) を比較する
+        // u32 型の guess と比較されることにより、secret_number も 
+        // u32 型と推測される
+        // cmp() は比較可能な全てのものに対して呼べるメソッドで、引数として、
+        // 比較したい相手の参照を取ります。 そして、先ほど use した、
+        // Ordering 型の値を返します。 
+        // match 文を使って、正確に Ordering のどれであるかを判断しています。 
+        // Ordering は enum (列挙型) で、enumは「enumeration(列挙)」の略です
+        match guess.cmp(&secret_number) {
+            Ordering::Less => println!("Too small!"),
+            Ordering::Greater => println!("Too big!"),
+            Ordering::Equal => {
+                println!("You win!");
+                // break で loop から抜ける
+                break;
+                }
+            }
+    }
 }
