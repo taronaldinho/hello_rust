@@ -77,7 +77,7 @@ fn fizz_buzz_3(limit: i32) {
 fn fizz_buzz_4(limit: i32) {
     for x in 1..=limit {
         match x {
-            e if e % 15 == 0 => println!("FizzBuzz"), // パターンの列挙をしない方法。
+            e if e % 15 == 0 => println!("FizzBuzz"),  // パターンの列挙をしない方法。
             e if e % 3 == 0  => println!("Fizz"),      // if 以降はパターンガードと呼ばれる。
             e if e % 5 == 0  => println!("Buzz"),
             e                => println!("{}", e),
@@ -119,9 +119,9 @@ fn fizz_buzz_7(limit: i32) {
             (0, _) => "Fizz",         // &str
             (_, 0) => "Buzz",         // &str
             _      => {
-                tmp = x.to_string();  // String 型である tmp の参照は Rust の型強制によって &str になる。
-                &tmp                  // このアームを抜けても参照が有効でなければならないので、前述の行での
-            },                        // tmp の宣言が必要になる。
+                tmp = x.to_string();  // String 型の tmp の参照は Rust の型強制によって &str になる。
+                &tmp                  // このアームを抜けても参照が有効でなければならないので、
+            },                        // 前述の行での tmp の宣言が必要になる。
         };
         println!("{}", s);
     }
@@ -137,5 +137,6 @@ fn fizz_buzz_8(limit: i32) {
                 _  => x.to_string(),
         }
     };
+    // map はイテレータを返すイテレータアダプタ、for_ezch はユニットを返すコンシューマと呼ばれるもの。
     (1..=limit).map(fz).for_each(|x| println!("{}", x)); // 高階関数とクロージャの利用
 }
