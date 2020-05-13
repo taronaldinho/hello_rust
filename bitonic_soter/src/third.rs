@@ -1,4 +1,5 @@
 use super::SortOrder;
+use std::cmp::Ordering;
 
 pub fn sort<T: Ord>(x: &mut [T], order: &SortOrder) -> Result<(), String> {
     if x.len().is_power_of_two() {
@@ -11,6 +12,17 @@ pub fn sort<T: Ord>(x: &mut [T], order: &SortOrder) -> Result<(), String> {
         Err(format!("The length of x is not a power of two. (x.len(): {}", x.len()))
     }
     
+}
+
+pub fn sort_by<T, F>(x: &mut T, comparator: &F) -> Result<(), String>
+    where F: Fn(&T, &T) -> Ordering
+{
+    if x.len().is_power_of_two() {
+        do_sort(x, true, comparator);
+        Ok(())
+    } else {
+        Err(format!("The length of x is not a power of two. (x.len(): {}", x.len()))
+    }
 }
 
 fn do_sort<T: Ord>(x: &mut [T], up: bool) {
@@ -42,7 +54,7 @@ fn compare_and_swap<T: Ord>(x: &mut [T], up: bool) {
 
 #[cfg(test)]
 mod tests {
-    use super::sort;
+    use super::{sort, sort_by};
     use crate::SortOrder::*;
 
     struct Student {
@@ -52,9 +64,11 @@ mod tests {
     }
     impl Student {
         fn new(first_name: &str, last_name: &str, age: u8) -> Self {
-            first_name: first_name.to_string(),
-            last_name: last_name.to_string(),
-            age,
+            Self {
+                first_name: first_name.to_string(),
+                last_name: last_name.to_string(),
+                age,
+            }
         }
     }
 
@@ -100,13 +114,35 @@ mod tests {
         let ryosuke = Student::new("Ryosuke", "Hayashi", 17);
 
         let mut x = vec![&taro, &hanako, &kyoko, &ryosuke];
+
         let expected = vec![&hanako, &kyoko, &taro, &ryosuke];
 
         assert_eq!(
-            &mut x, &|a, b| a.age.cmp(&b.age),
+            sort_by(&mut x, &|a, b| a.age.cmp(&b.age)),
             Ok(())
         );
-        assert_eq!(x, expected);
 
+        assert_eq!(x, expected);
+    }
+
+    #[test]
+    fn sort_students_by_name_ascending() {
+        let taro = Student::new("Taro", "Yamada", 16);
+        let hanako = Student::new("Hanako", "Yamada", 14);
+        let kyoko = Student::new("Kyoko", "Ito", 15);
+        let ryosuke = Student::new("Ryosuke", "Hayashi", 17);
+
+        let mut x = vec![&taro, &hanako, &kyoko, &ryosuke];
+
+        let expected = vec![&ryosuke, &kyoko, &hanako, &taro];
+
+        assert_eq!(
+            sort_by(&mut x, 
+                    &|a, b| a.last_name.cmp(&b.last_name)
+                    .then_with(|| a.first_name.cmp(&b.first_name))),
+            Ok(())
+        );
+
+        assert_eq!(x, expected);
     }
 }
