@@ -1,3 +1,7 @@
+// もっとも単純な実装。
+
+// pub 修飾子でモジュール (このファイル) 外から呼び出し可能となる。
+// 引数は可変な u32 型の値からなるスライス (配列) の参照と、真理値。
 pub fn sort(x: &mut [u32], up: bool) {
     if x.len() > 1 {
         let mid_point = x.len() / 2;
@@ -19,16 +23,21 @@ fn sub_sort(x: &mut [u32], up: bool) {
 fn compare_and_swap(x: &mut [u32], up: bool) {
     let mid_point = x.len() / 2;
     for i in 0..mid_point {
+        // スライスの持つ swap メソッドで必要に応じて値を交換する。
         if (x[i] > x[mid_point + i]) == up {
             x.swap(i, mid_point + i);
         }
     }
 }
 
+// 単体テスト。
+// このモジュールは cargo test を実行したときのみコンパイルされる。
 #[cfg(test)]
 mod tests {
+    // 親モジュールの sort 関数をテストのために読み込む。
     use super::sort;
 
+    // #[test] の付いた関数は cargo test を実行したとき実行される。     
     #[test]
     fn sort_u32_ascending() {
         let mut x  = vec![10, 30, 11, 20, 4, 330, 21, 110];
