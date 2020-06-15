@@ -16,13 +16,16 @@ pub fn sort<T: Ord>(x: &mut [T], order: &SortOrder) -> Result<(), String> {
             SortOrder::Ascending => do_sort(x, true),
             SortOrder::Decending => do_sort(x, false),
         };
-        // 成功時はユニット型 () を返す。
+
+        // 2 のべき乗の時は do_sort 関数の処理の後にユニット型 () を返す。
         Ok(())
+
     } else {
+
         // エラー時 (長さが 2 のべき乗ではない) はエラー文字列を返す。
-        Err(format!("The length of x is not a power of two. (x.len(): {}", x.len()))
-    }
-    
+        Err(format!("The length of x is not a power of two. (x.len(): {})", x.len()))
+
+    }   
 }
 
 fn do_sort<T: Ord>(x: &mut [T], up: bool) {
@@ -45,7 +48,7 @@ fn sub_sort<T: Ord>(x: &mut [T], up: bool) {
 
 fn compare_and_swap<T: Ord>(x: &mut [T], up: bool) {
     let mid_point = x.len() / 2;
-    for i in 0..mid_point {
+    for i in 0..mid_point {        
         // スライスの持つ swap メソッドで必要に応じて値を交換する。
         if (x[i] > x[mid_point + i]) == up {
             x.swap(i, mid_point + i);
@@ -57,6 +60,7 @@ fn compare_and_swap<T: Ord>(x: &mut [T], up: bool) {
 // このモジュールは cargo test を実行したときのみコンパイルされる。
 #[cfg(test)]
 mod tests {
+
     // 親モジュールの sort 関数をテストのために読み込む。
     // また、SortOrder 列挙型のすべてのバリアントも読み込む。
     use super::sort;
@@ -66,11 +70,14 @@ mod tests {
     // 整数値のソートのテストを行う。
     #[test]
     fn sort_u32_ascending() {
+
         // x に型注釈 Vec<u32> をつける。
         let mut x:Vec<u32>  = vec![10, 30, 11, 20, 4, 330, 21, 110];
+
         // &Ascending は SortOrder 列挙型のバリアントのひとつ。
         // まずは sort 関数が Result 型の Ok (ユニット) を返すかどうかをチェック。
         assert_eq!(sort(&mut x, &Ascending), Ok(()));
+
         // 次にソート結果が想定したものかどうかをチェックする。
         assert_eq!(x, vec![4, 10, 11, 20, 21, 30, 110, 330]);
     }
