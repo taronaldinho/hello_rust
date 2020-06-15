@@ -1,13 +1,11 @@
-// ← スラッシュ 2 つはコメント
-// 標準 (std) ライブラリから io ライブラリをインポート
-// 同じく cmp をインポート
-// Cargo.io からダウンロードした rand をインポート
-use std::io;
-use std::cmp::Ordering;
-use rand::Rng;
+// ← スラッシュ 2 つはコメントとなる。
+use std::io;              // 標準 (std) ライブラリから io ライブラリをインポート。
+use std::cmp::Ordering;   // 同じく cmp をインポート。
+use rand::Rng;            // Cargo.io からダウンロードした rand をインポート。
 
 fn main() {
     println!("Guess the number!");
+
     // 1 から 101 未満 の範囲の整数からランダムに 1 つ抜き出す。
     // この時点で型推論により Rust は secret_number を i32 型と推定する。
     // i32 は符号付きの 32 bit 整数である。
@@ -15,7 +13,7 @@ fn main() {
 
     println!("The secret number is: {}", secret_number);
     
-    // loop で繰り返し
+    // loop で繰り返し。
     loop {
 
         println!("Please input your guess.");
@@ -52,13 +50,15 @@ fn main() {
         // そして、use した Ordering 型の値を返す。 
         // match 文を使って、正確に Ordering のどれであるかを判断しています。         
         match guess.cmp(&secret_number) {
+
             Ordering::Less => println!("Too small!"),
             Ordering::Greater => println!("Too big!"),
-            Ordering::Equal => {
+            Ordering::Equal => {                
                 println!("You win!");
                 // break で loop から抜ける。
                 break;
                 }
-            }
+
+        }
     }
 }
