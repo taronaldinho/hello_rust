@@ -19,13 +19,13 @@ pub fn sort<T: Ord>(x: &mut [T], order: &SortOrder) -> Result<(), String> {
 
         // 2 のべき乗の時は do_sort 関数の処理の後にユニット型 () を返す。
         Ok(())
-
     } else {
-
         // エラー時 (長さが 2 のべき乗ではない) はエラー文字列を返す。
-        Err(format!("The length of x is not a power of two. (x.len(): {})", x.len()))
-
-    }   
+        Err(format!(
+            "The length of x is not a power of two. (x.len(): {})",
+            x.len()
+        ))
+    }
 }
 
 fn do_sort<T: Ord>(x: &mut [T], up: bool) {
@@ -48,7 +48,7 @@ fn sub_sort<T: Ord>(x: &mut [T], up: bool) {
 
 fn compare_and_swap<T: Ord>(x: &mut [T], up: bool) {
     let mid_point = x.len() / 2;
-    for i in 0..mid_point {        
+    for i in 0..mid_point {
         // スライスの持つ swap メソッドで必要に応じて値を交換する。
         if (x[i] > x[mid_point + i]) == up {
             x.swap(i, mid_point + i);
@@ -70,9 +70,8 @@ mod tests {
     // 整数値のソートのテストを行う。
     #[test]
     fn sort_u32_ascending() {
-
         // x に型注釈 Vec<u32> をつける。
-        let mut x:Vec<u32>  = vec![10, 30, 11, 20, 4, 330, 21, 110];
+        let mut x: Vec<u32> = vec![10, 30, 11, 20, 4, 330, 21, 110];
 
         // &Ascending は SortOrder 列挙型のバリアントのひとつ。
         // まずは sort 関数が Result 型の Ok (ユニット) を返すかどうかをチェック。
@@ -84,7 +83,7 @@ mod tests {
 
     #[test]
     fn sort_u32_decending() {
-        let mut x: Vec<u32>  = vec![10, 30, 11, 20, 4, 330, 21, 110];
+        let mut x: Vec<u32> = vec![10, 30, 11, 20, 4, 330, 21, 110];
         assert_eq!(sort(&mut x, &Decending), Ok(()));
         assert_eq!(x, vec![330, 110, 30, 21, 20, 11, 10, 4]);
     }
@@ -92,16 +91,58 @@ mod tests {
     // 文字列のソートのテストを行う。
     #[test]
     fn sort_str_ascending() {
-        let mut x = vec!["Rust", "is", "fast", "and", "memory-efficient", "with", "no", "GC"];
+        let mut x = vec![
+            "Rust",
+            "is",
+            "fast",
+            "and",
+            "memory-efficient",
+            "with",
+            "no",
+            "GC",
+        ];
         assert_eq!(sort(&mut x, &Ascending), Ok(()));
-        assert_eq!(x, vec!["GC", "Rust", "and", "fast", "is", "memory-efficient", "no", "with"]);
+        assert_eq!(
+            x,
+            vec![
+                "GC",
+                "Rust",
+                "and",
+                "fast",
+                "is",
+                "memory-efficient",
+                "no",
+                "with"
+            ]
+        );
     }
 
     #[test]
     fn sort_str_decending() {
-        let mut x = vec!["Rust", "is", "fast", "and", "memory-efficient", "with", "no", "GC"];
+        let mut x = vec![
+            "Rust",
+            "is",
+            "fast",
+            "and",
+            "memory-efficient",
+            "with",
+            "no",
+            "GC",
+        ];
         assert_eq!(sort(&mut x, &Decending), Ok(()));
-        assert_eq!(x, vec!["with", "no", "memory-efficient", "is", "fast", "and", "Rust", "GC"])
+        assert_eq!(
+            x,
+            vec![
+                "with",
+                "no",
+                "memory-efficient",
+                "is",
+                "fast",
+                "and",
+                "Rust",
+                "GC"
+            ]
+        )
     }
 
     // x の長さが 2 のべき乗でない場合にエラーを返すかどうかのテストを行う。

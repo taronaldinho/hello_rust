@@ -37,10 +37,10 @@ mod tests {
     // 親モジュールの sort 関数をテストのために読み込む。
     use super::sort;
 
-    // #[test] の付いた関数は cargo test を実行したとき実行される。     
+    // #[test] の付いた関数は cargo test を実行したとき実行される。
     #[test]
     fn sort_u32_ascending() {
-        let mut x  = vec![10, 30, 11, 20, 4, 330, 21, 110];
+        let mut x = vec![10, 30, 11, 20, 4, 330, 21, 110];
 
         sort(&mut x, true);
         assert_eq!(x, vec![4, 10, 11, 20, 21, 30, 110, 330]);
@@ -48,10 +48,9 @@ mod tests {
 
     #[test]
     fn sort_u32_decending() {
-        let mut x  = vec![10, 30, 11, 20, 4, 330, 21, 110];
+        let mut x = vec![10, 30, 11, 20, 4, 330, 21, 110];
 
         sort(&mut x, false);
         assert_eq!(x, vec![330, 110, 30, 21, 20, 11, 10, 4]);
     }
-
 }

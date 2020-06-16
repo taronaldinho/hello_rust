@@ -1,10 +1,9 @@
-use rand::{Rng, SeedableRng};
-use rand::distributions::Standard;
-use rand_pcg::Pcg64Mcg;
 use super::SortOrder;
+use rand::distributions::Standard;
+use rand::{Rng, SeedableRng};
+use rand_pcg::Pcg64Mcg;
 
 pub fn new_u32_vec(n: usize) -> Vec<u32> {
-    
     // Rng を初期化する。再現性のためにシード値を指定する。
     let mut rng = Pcg64Mcg::from_seed([0; 16]);
 
@@ -18,7 +17,6 @@ pub fn new_u32_vec(n: usize) -> Vec<u32> {
     // for _ in 0..n {
     //     v.push(rng.sample(&Standard))
     // }
-
 }
 
 // 下記ふたつの関数をまとめたもの。昇順または降順にソートされているかどうかチェックする。
