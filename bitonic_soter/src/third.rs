@@ -89,8 +89,9 @@ fn compare_and_swap<T, F>(x: &mut [T], forward: bool, comparator: &F)
 mod tests {
     // 親モジュールの sort と sort_by 関数をテストのために読み込む。
     // また、SortOrder 列挙型のすべてのバリアントも読み込む。
-    use super::{sort, sort_by};
+    use super::{sort, sort_by};    
     use crate::SortOrder::*;
+    use crate::utils::{new_u32_vec, is_sorted};
 
     // Student 構造体を定義する。
     // derive アトリビュートで Debug および PartialEq トレイトを自動導出する。
@@ -203,5 +204,20 @@ mod tests {
 
         assert_eq!(x, expected);
 
+    }
+
+    #[test]
+    fn sort_u32_large() {
+        {
+            let mut x = new_u32_vec(65536);
+            assert_eq!(sort(&mut x, &Ascending), Ok(()));
+            assert!(is_sorted(&x, &Ascending))
+        }
+        {
+            let mut x = new_u32_vec(65536);
+            assert_eq!(sort(&mut x, &Decending), Ok(()));
+            assert!(is_sorted(&x, &Decending))
+        }
+        
     }
 }
