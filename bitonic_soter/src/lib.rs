@@ -1,5 +1,6 @@
 // lib.rs は lib クレートのエントリポイントである。
 pub mod first;
+pub mod fourth;
 pub mod second;
 pub mod third;
 
