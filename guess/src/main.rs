@@ -13,7 +13,6 @@ fn main() {
 
     // loopで繰り返し。
     loop {
-
         println!("Please input your guess.");
 
         // ミュータブル（変更可能）なguessという変数を作成し、
@@ -35,7 +34,7 @@ fn main() {
         // mutな変数への再代入は元の値と同じ型でなければならないが、シャドーイングでは型が変わってもよい。
         // parse()はResultを返す。
         // Ok(num)はOkをアンラップして得られた値(整数値)をnumという名前に設定し、
-        // 続く右側でその値をそのまま返している。
+        // 続く右側でその値をそのまま返しguessに代入ている。
         let guess: u32 = match guess.trim().parse() {
                     Ok(num) => num,
                     Err(_) => continue,  // continueでloopの先頭に戻る。
@@ -49,7 +48,6 @@ fn main() {
         // そして、useしたOrdering型の値を返す。
         // match文を使って、正確にOrderingのどれであるかを判断している。
         match guess.cmp(&secret_number) {
-
             Ordering::Less => println!("Too small!"),
             Ordering::Greater => println!("Too big!"),
             Ordering::Equal => {
